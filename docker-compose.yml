@@ -2,7 +2,7 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "3000:3000"  # API sur localhost:3000
     environment:
       - PORT=3000
       - DB_URL=postgres://postgres:postgres@db:5432/monapiclient
@@ -25,6 +25,16 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "3001:3001"  # ✅ Frontend déplacé sur le port 3001
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api  # appel vers l'API toujours sur 3000
 
   flyway:
     image: flyway/flyway:9
@@ -33,7 +43,6 @@ services:
     volumes:
       - ./migrations:/flyway/sql
     command: -url=jdbc:postgresql://db:5432/monapiclient -user=postgres -password=postgres -baselineOnMigrate=true migrate
-
 
 volumes:
   pgdata:
