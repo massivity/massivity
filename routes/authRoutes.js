@@ -114,5 +114,48 @@ router.delete('/account', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la suppression du compte' });
   }
 });
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Rafraîchir un access token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Nouveau accessToken retourné
+ *       403:
+ *         description: Refresh token invalide
+ */
+router.post('/refresh', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) return res.status(401).json({ error: 'Token requis' });
+
+  try {
+    const result = await pool.query('SELECT * FROM clients WHERE refresh_token = $1', [refreshToken]);
+    const user = result.rows[0];
+
+    if (!user) return res.status(403).json({ error: 'Refresh token invalide' });
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err || decoded.id !== user.id) {
+        return res.status(403).json({ error: 'Refresh token non valide ou expiré' });
+      }
+
+      const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+      res.json({ accessToken });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur lors du rafraîchissement' });
+  }
+});
 
 module.exports = router;

@@ -113,3 +113,24 @@ Puis accéder à l'API et à la doc sur :
   "message": "Compte supprimé avec succès 🗑️"
 }
 ```
+
+
+### 🔄 Rafraîchir le token d'accès
+
+**URL** : `POST /api/auth/refresh`  
+**Auth requise** : Non  
+**Body JSON** :
+```json
+{
+  "refreshToken": "..."
+}
+```
+
+**Réponse (200)** :
+```json
+{
+  "accessToken": "..."
+}
+```
+
+📌 Ce token peut ensuite être utilisé pour accéder aux routes protégées.
