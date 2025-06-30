@@ -99,3 +99,17 @@ docker compose up --build
 Puis accéder à l'API et à la doc sur :
 - `http://localhost:3000/api/auth/register`
 - `http://localhost:3000/api-docs`
+
+
+### 🔥 Supprimer son compte
+
+**URL** : `DELETE /api/auth/account`  
+**Auth requise** : Oui (token Bearer)  
+**Description** : Supprime définitivement le compte utilisateur connecté.
+
+**Réponse (200)** :
+```json
+{
+  "message": "Compte supprimé avec succès 🗑️"
+}
+```
