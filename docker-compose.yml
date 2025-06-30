@@ -25,5 +25,15 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+
+  flyway:
+    image: flyway/flyway:9
+    depends_on:
+      - db
+    volumes:
+      - ./migrations:/flyway/sql
+    command: -url=jdbc:postgresql://db:5432/monapiclient -user=postgres -password=postgres -baselineOnMigrate=true migrate
+
+
 volumes:
   pgdata:
