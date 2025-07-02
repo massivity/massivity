@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const setupDocs = require('./swagger');
 const authRoutes = require('./routes/authRoutes');
 const changelogRoutes = require('./routes/changelogRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use('/changelog', changelogRoutes);
+app.use('/api/admin', adminRoutes);
 
 setupDocs(app);
 
