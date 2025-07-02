@@ -1,0 +1,53 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"  # API sur localhost:3000
+    environment:
+      - PORT=3000
+      - DB_URL=postgres://postgres:postgres@db:5432/monapiclient
+      - JWT_SECRET=superclejwt
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monapiclient
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "3001:3001"  # ✅ Frontend déplacé sur le port 3001
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api  # appel vers l'API toujours sur 3000
+
+  flyway:
+    image: flyway/flyway:9
+    depends_on:
+      - db
+    volumes:
+      - ./migrations:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/monapiclient
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+    command: migrate
+
+volumes:
+  pgdata:
