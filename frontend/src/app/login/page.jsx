@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -63,7 +64,10 @@ export default function LoginPage() {
                     </button>
                 </form>
                 <p className="mt-4 text-sm text-center text-gray-500">
-                    Pas encore de compte ? <span className="text-purple-600 font-medium cursor-pointer hover:underline">Inscris-toi</span>
+                    Pas encore de compte ?{' '}
+                    <Link href="/register" className="text-purple-600 font-medium hover:underline">
+                        Inscris-toi
+                    </Link>
                 </p>
             </div>
         </div>
