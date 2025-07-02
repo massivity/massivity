@@ -7,6 +7,8 @@ const changelogRoutes = require('./routes/changelogRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
+console.log('🔐 Clé secrète JWT chargée :', process.env.JWT_SECRET ? '✅ OK' : '❌ ABSENTE');
+
 
 const app = express();
 const port = process.env.PORT || 3000;
