@@ -42,7 +42,12 @@ services:
       - db
     volumes:
       - ./migrations:/flyway/sql
-    command: -url=jdbc:postgresql://db:5432/monapiclient -user=postgres -password=postgres -baselineOnMigrate=true migrate
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/monapiclient
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+    command: migrate
 
 volumes:
   pgdata:
