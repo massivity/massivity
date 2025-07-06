@@ -11,6 +11,7 @@ coverage/
 start-all.sh
 start be_fe.sh
 
+
 # === BACKEND ===
 backend/node_modules/
 backend/logs/
