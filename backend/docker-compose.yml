@@ -1,14 +1,15 @@
 services:
   api:
     build:
-      context: ./backend
+      context: .
     working_dir: /app
     ports:
       - "3000:3000"
     environment:
       - PORT=3000
       - DB_URL=postgres://postgres:postgres@db:5432/monapiclient
-      - JWT_SECRET=superclejwt
+      - ACCESS_TOKEN_SECRET=!ToB$%PraWh*8m3Bu2RYWqN#1IN16A6691&kcPiu5X%1Wcci35yfGG
+      - REFRESH_TOKEN_SECRET=Bi5@j^LcedeZ9RrH3eq#d9y!JMLmDx%O7U7CvKqa6Hs%sQ7!rykxAsnb1PMc#nLM%xwI&FI
     volumes:
       - ./backend:/app
     depends_on:
@@ -25,11 +26,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile
     working_dir: /app
     volumes:
@@ -46,7 +47,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend/migrations:/flyway/sql
+      - ./migrations:/flyway/sql
     environment:
       FLYWAY_URL: jdbc:postgresql://db:5432/monapiclient
       FLYWAY_USER: postgres

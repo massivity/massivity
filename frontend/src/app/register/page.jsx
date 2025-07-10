@@ -37,21 +37,22 @@ export default function RegisterPage() {
             <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">📝 Inscription</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Nom</label>
                     <input name="nom" value={form.nom} onChange={handleChange} placeholder="Nom"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
-
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Prénom</label>
                     <input name="prenom" value={form.prenom} onChange={handleChange} placeholder="Prénom"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
-
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
                     <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
-
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Adresse</label>
                     <input name="adresse" value={form.adresse} onChange={handleChange} placeholder="Adresse"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
-
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Téléphone</label>
                     <input type="tel" name="telephone" value={form.telephone} onChange={handleChange} placeholder="Téléphone"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
-
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Mot de passe</label>
                     <input type="password" name="mot_de_passe" value={form.mot_de_passe} onChange={handleChange} placeholder="Mot de passe"
                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required />
 
