@@ -1,42 +1,27 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-export default function Api({ apiUrl = 'http://localhost:3000/api' }) {
-    const [isOnline, setIsOnline] = useState(null);
-
+/**
+ * Ce composant ne rend rien. Il sert juste à détecter si l’API backend est en ligne
+ * et à notifier le parent via la prop onStatusChange(online: boolean).
+ * Par défaut, il checke http://localhost:3000/api.
+ */
+export default function ServerStatus({ apiUrl = 'http://localhost:3000/api', onStatusChange }) {
     useEffect(() => {
         const checkStatus = async () => {
             try {
                 const res = await fetch(apiUrl, { method: 'HEAD' });
-                setIsOnline(res.ok);
+                if (onStatusChange) onStatusChange(res.ok);
             } catch {
-                setIsOnline(false);
+                if (onStatusChange) onStatusChange(false);
             }
         };
 
-        checkStatus(); // check on load
-        const interval = setInterval(checkStatus, 10000); // check every 10 sec
+        checkStatus();
+        const interval = setInterval(checkStatus, 10000);
         return () => clearInterval(interval);
-    }, [apiUrl]);
+    }, [apiUrl, onStatusChange]);
 
-    return (
-        <div className="flex items-center space-x-2 text-sm text-gray-700">
-            <span
-                className={`w-3 h-3 rounded-full ${
-                    isOnline === null
-                        ? 'bg-gray-400'
-                        : isOnline
-                            ? 'bg-green-500'
-                            : 'bg-red-500'
-                }`}
-            />
-            <span>
-                {isOnline === null
-                    ? 'Chargement...'
-                    : isOnline
-                        ? 'Serveur en ligne'
-                        : 'Serveur hors ligne'}
-            </span>
-        </div>
-    );
+    // Ce composant n’affiche plus rien
+    return null;
 }

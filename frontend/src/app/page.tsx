@@ -2,8 +2,12 @@
 import Link from 'next/link';
 import { SparklesIcon, ArrowRightIcon } from '@heroicons/react/24/solid';
 import ServerStatus from '@/components/serverStatus/api';
+import { useState } from 'react';
 
 export default function HomePage() {
+  const [serverOnline, setServerOnline] = useState(true);
+  const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME || 'Ton Projet';
+
   return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-10">
         <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-2xl w-full text-center animate-fade-in">
@@ -11,7 +15,7 @@ export default function HomePage() {
             <SparklesIcon className="h-10 w-10 text-purple-600 animate-pulse" />
           </div>
           <h1 className="text-4xl font-extrabold text-gray-800 mb-2 tracking-tight">
-            Bienvenue sur <span className="text-purple-600">Massivity</span>
+            Bienvenue sur <span className="text-purple-600">{projectName}</span>
           </h1>
 
           <p className="text-gray-600 text-lg mb-6">
@@ -20,14 +24,26 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-2 gap-4 mt-4">
             <Link
-                href="/login"
-                className="bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-xl text-lg font-semibold shadow-md transition duration-300 flex items-center justify-center gap-2"
+                href={serverOnline ? "/login" : "#"}
+                aria-disabled={!serverOnline}
+                tabIndex={serverOnline ? 0 : -1}
+                className={`${
+                    serverOnline
+                        ? 'bg-purple-600 hover:bg-purple-700 cursor-pointer'
+                        : 'bg-gray-300 text-gray-400 cursor-not-allowed'
+                } text-white py-3 px-6 rounded-xl text-lg font-semibold shadow-md transition duration-300 flex items-center justify-center gap-2`}
             >
               🔐 Connexion <ArrowRightIcon className="h-5 w-5" />
             </Link>
             <Link
-                href="/register"
-                className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 py-3 px-6 rounded-xl text-lg font-semibold shadow-md transition duration-300 flex items-center justify-center gap-2"
+                href={serverOnline ? "/register" : "#"}
+                aria-disabled={!serverOnline}
+                tabIndex={serverOnline ? 0 : -1}
+                className={`${
+                    serverOnline
+                        ? 'border-2 border-purple-600 text-purple-600 hover:bg-purple-50'
+                        : 'border-2 border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed'
+                } py-3 px-6 rounded-xl text-lg font-semibold shadow-md transition duration-300 flex items-center justify-center gap-2`}
             >
               ✍️ Inscription <ArrowRightIcon className="h-5 w-5" />
             </Link>
@@ -39,7 +55,12 @@ export default function HomePage() {
           >
             📘 Voir le changelog
           </Link>
-          <ServerStatus />
+          <ServerStatus onStatusChange={setServerOnline} />
+          {!serverOnline && (
+              <div className="mt-6 text-red-500 text-sm font-semibold animate-pulse">
+                Serveur hors ligne : impossible de se connecter ou de s’inscrire pour le moment.
+              </div>
+          )}
         </div>
       </div>
   );

@@ -12,6 +12,7 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErreur('');
         try {
             const res = await api.post('/auth/login', {
                 email,
@@ -19,7 +20,14 @@ export default function LoginPage() {
             });
 
             localStorage.setItem('accessToken', res.data.accessToken);
-            router.push('/profil');
+
+            // Redirection : uniquement /dashboard si role === "admin"
+            const userRole = res.data.user.role;
+            if (userRole === 'admin') {
+                router.push('/dashboard');
+            } else {
+                router.push('/profil');
+            }
         } catch (err) {
             setErreur("Échec de la connexion 😢");
             console.error(err);
