@@ -19,7 +19,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.use('/changelog', changelogRoutes);       // Pour compat' ancienne URL ?
+app.use('/api/changelog', changelogRoutes);       // Pour compat' ancienne URL ?
 app.use('/api/changelogs', changelogRoutes);  // Nouvelle convention ?
 app.use('/api/admin', adminRoutes);
 
