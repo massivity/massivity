@@ -7,7 +7,7 @@ const options = {
         info: {
             title: 'API Clients',
             version: '1.0.0',
-            description: 'Documentation de l’API Clients avec authentification sécurisée',
+            description: 'Documentation de l’API Clients avec authentification sécurisée (JWT), gestion du profil, dashboard admin, changelog, et plus.',
         },
         servers: [
             {
@@ -25,26 +25,16 @@ const options = {
             }
         },
         security: [
-            {
-                bearerAuth: []
-            }
+            { bearerAuth: [] }
         ],
         tags: [
-            {
-                name: 'Auth',
-                description: 'Routes d’authentification (inscription, connexion)',
-            },
-            {
-                name: 'Changelogs',
-                description: 'Historique des modifications',
-            },
-            {
-                name: 'Admin',
-                description: 'Routes réservées aux administrateurs',
-            },
+            { name: 'Auth', description: 'Routes d’authentification (inscription, connexion, profil)' },
+            { name: 'Changelogs', description: 'Historique des modifications' },
+            { name: 'Admin', description: 'Fonctions avancées (dashboard, gestion utilisateurs, promotion)' },
+            { name: 'Healthcheck', description: 'Vérification de l’état de l’API' }
         ],
         paths: {
-
+            // ----------------- AUTH ---------------------
             '/api/auth/register': {
                 post: {
                     tags: ['Auth'],
@@ -65,31 +55,8 @@ const options = {
                         },
                     },
                     responses: {
-                        201: {
-                            description: 'Compte créé avec succès',
-                        },
-                        500: {
-                            description: 'Erreur lors de l’inscription',
-                        },
-                    },
-                },
-            },
-            '/api/healthcheck': {
-                get: {
-                    tags: ['Healthcheck'],
-                    summary: 'Vérifie si l’API est en ligne',
-                    responses: {
-                        200: {
-                            description: 'API opérationnelle',
-                            content: {
-                                'application/json': {
-                                    example: {
-                                        status: 'ok',
-                                        message: 'API opérationnelle ✅'
-                                    },
-                                },
-                            },
-                        },
+                        201: { description: 'Compte créé avec succès' },
+                        500: { description: 'Erreur lors de l’inscription' },
                     },
                 },
             },
@@ -110,11 +77,24 @@ const options = {
                     },
                     responses: {
                         200: {
-                            description: 'Connexion réussie avec token JWT',
+                            description: 'Connexion réussie',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        accessToken: 'xxx.yyy.zzz',
+                                        refreshToken: 'aaa.bbb.ccc',
+                                        user: {
+                                            id: 1,
+                                            nom: 'Doe',
+                                            prenom: 'John',
+                                            email: 'john.doe@email.com',
+                                            role: 'user'
+                                        }
+                                    }
+                                }
+                            }
                         },
-                        401: {
-                            description: 'Identifiants invalides',
-                        },
+                        401: { description: 'Identifiants invalides' },
                     },
                 },
             },
@@ -133,9 +113,7 @@ const options = {
                                 },
                             },
                         },
-                        401: {
-                            description: 'Non authentifié',
-                        },
+                        401: { description: 'Non authentifié' },
                     },
                 },
             },
@@ -151,25 +129,22 @@ const options = {
                             content: {
                                 'application/json': {
                                     example: {
-                                        id: 1,
-                                        nom: 'Veeraragoo',
-                                        prenom: 'Darren',
-                                        email: 'd.veeraragoo@hotmail.com',
-                                        role: 'user',
+                                        user: {
+                                            id: 1,
+                                            nom: 'Veeraragoo',
+                                            prenom: 'Darren',
+                                            email: 'd.veeraragoo@hotmail.com',
+                                            role: 'admin'
+                                        }
                                     },
                                 },
                             },
                         },
-                        401: {
-                            description: 'Non authentifié',
-                        },
-                        403: {
-                            description: 'Token invalide',
-                        },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Token invalide' },
                     },
                 },
             },
-
             '/api/auth/account': {
                 delete: {
                     tags: ['Auth'],
@@ -185,9 +160,7 @@ const options = {
                                 },
                             },
                         },
-                        401: {
-                            description: 'Non authentifié',
-                        },
+                        401: { description: 'Non authentifié' },
                     },
                 },
             },
@@ -211,17 +184,19 @@ const options = {
                             description: 'Nouveau token généré avec succès',
                             content: {
                                 'application/json': {
-                                    example: { accessToken: 'new.jwt.token.here' },
+                                    example: {
+                                        accessToken: 'new.jwt.token.here',
+                                        refreshToken: 'nouveau.refresh.token.here'
+                                    },
                                 },
                             },
                         },
-                        401: {
-                            description: 'Token invalide ou expiré',
-                        },
+                        401: { description: 'Token invalide ou expiré' },
                     },
                 },
             },
 
+            // ----------------- CHANGELOGS ---------------------
             '/api/changelogs': {
                 get: {
                     tags: ['Changelogs'],
@@ -229,10 +204,26 @@ const options = {
                     responses: {
                         200: {
                             description: 'Liste récupérée avec succès',
+                            content: {
+                                'application/json': {
+                                    example: [
+                                        {
+                                            id: 1,
+                                            titre: 'Connexion sécurisée',
+                                            description: 'Connexion stylée avec gestion du token',
+                                            date: '2025-06-30T22:00:00.000Z'
+                                        },
+                                        {
+                                            id: 2,
+                                            titre: 'Initialisation du frontend',
+                                            description: 'Base Next.js avec Tailwind',
+                                            date: '2025-06-29T22:00:00.000Z'
+                                        }
+                                    ]
+                                }
+                            }
                         },
-                        500: {
-                            description: 'Erreur lors de la récupération',
-                        },
+                        500: { description: 'Erreur lors de la récupération' },
                     },
                 },
                 post: {
@@ -250,20 +241,19 @@ const options = {
                         },
                     },
                     responses: {
-                        201: {
-                            description: 'Changelog créé avec succès',
-                        },
-                        500: {
-                            description: 'Erreur lors de la création',
-                        },
+                        201: { description: 'Changelog créé avec succès' },
+                        500: { description: 'Erreur lors de la création' },
                     },
                 },
             },
+
+            // ----------------- ADMIN ---------------------
             '/api/admin/dashboard': {
                 get: {
                     tags: ['Admin'],
                     summary: 'Dashboard admin (accès restreint)',
                     description: 'Route réservée aux administrateurs.',
+                    security: [{ bearerAuth: [] }],
                     responses: {
                         200: {
                             description: 'Accès autorisé (admin)',
@@ -273,11 +263,102 @@ const options = {
                                 },
                             },
                         },
-                        403: {
-                            description: 'Accès interdit : rôle insuffisant',
+                        403: { description: 'Accès interdit : rôle insuffisant' },
+                        401: { description: 'Non authentifié' },
+                    },
+                },
+            },
+            '/api/admin/users': {
+                get: {
+                    tags: ['Admin'],
+                    summary: 'Liste tous les utilisateurs (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    responses: {
+                        200: {
+                            description: 'Liste des utilisateurs',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        users: [
+                                            {
+                                                id: 1,
+                                                nom: 'Veeraragoo',
+                                                prenom: 'Darren',
+                                                email: 'd.veeraragoo@hotmail.com',
+                                                role: 'admin'
+                                            },
+                                            {
+                                                id: 2,
+                                                nom: 'Dupont',
+                                                prenom: 'Jean',
+                                                email: 'jean.dupont@email.com',
+                                                role: 'user'
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
                         },
-                        401: {
-                            description: 'Non authentifié',
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        401: { description: 'Non authentifié' }
+                    }
+                }
+            },
+            '/api/admin/promote/{userId}': {
+                patch: {
+                    tags: ['Admin'],
+                    summary: 'Promouvoir ou rétrograder un utilisateur',
+                    description: 'Permet à un admin de changer le rôle d’un utilisateur.',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'userId',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'integer' },
+                            description: 'ID de l’utilisateur à modifier'
+                        }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                example: {
+                                    role: 'admin'
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: {
+                            description: 'Rôle modifié',
+                            content: {
+                                'application/json': {
+                                    example: { message: 'Rôle modifié avec succès' }
+                                }
+                            }
+                        },
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        401: { description: 'Non authentifié' }
+                    }
+                }
+            },
+            // ----------------- HEALTHCHECK ---------------------
+            '/api/healthcheck': {
+                get: {
+                    tags: ['Healthcheck'],
+                    summary: 'Vérifie si l’API est en ligne',
+                    responses: {
+                        200: {
+                            description: 'API opérationnelle',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        status: 'ok',
+                                        message: 'API opérationnelle ✅'
+                                    },
+                                },
+                            },
                         },
                     },
                 },
