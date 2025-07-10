@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { accessTokenSecret } = require('../../config');
+console.log('🔐 Clé secrète utilisée pour verify :', accessTokenSecret);
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];

@@ -8,8 +8,8 @@ services:
     environment:
       - PORT=3000
       - DB_URL=postgres://postgres:postgres@db:5432/monapiclient
-      - ACCESS_TOKEN_SECRET=!ToB$%PraWh*8m3Bu2RYWqN#1IN16A6691&kcPiu5X%1Wcci35yfGG
-      - REFRESH_TOKEN_SECRET=Bi5@j^LcedeZ9RrH3eq#d9y!JMLmDx%O7U7CvKqa6Hs%sQ7!rykxAsnb1PMc#nLM%xwI&FI
+      - ACCESS_TOKEN_SECRET=!ToB$%PraWh*8m3Bu2RYWqN
+      - REFRESH_TOKEN_SECRET=Bi5@j^LcedeZ9RrH3eq
     volumes:
       - ./backend:/app
     depends_on:
