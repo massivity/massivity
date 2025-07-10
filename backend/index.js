@@ -5,7 +5,9 @@ const setupDocs = require('./swagger');
 const authRoutes = require('./routes/authRoutes');
 const changelogRoutes = require('./routes/changelogRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const profileRoute = require('./routes/profilRoute'); // <-- OK, orthographe "profilRoute" ?
+const profileRoute = require('./routes/profilRoute');
+const listAllUsers = require('./routes/administration/listAllUsers');
+const promoteUser = require('./routes/administration/promoteUser');
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ app.use(express.json());
 app.use('/api/changelog', changelogRoutes);       // Pour compat' ancienne URL ?
 app.use('/api/changelogs', changelogRoutes);  // Nouvelle convention ?
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', listAllUsers);
+app.use('/api/admin', promoteUser);
 
 // 👉 Toutes les routes liées à l'authentification ET au profil utilisateur :
 app.use('/api/auth', authRoutes);
