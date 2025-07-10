@@ -44,6 +44,7 @@ const options = {
             },
         ],
         paths: {
+
             '/api/auth/register': {
                 post: {
                     tags: ['Auth'],
@@ -69,6 +70,25 @@ const options = {
                         },
                         500: {
                             description: 'Erreur lors de l’inscription',
+                        },
+                    },
+                },
+            },
+            '/api/healthcheck': {
+                get: {
+                    tags: ['Healthcheck'],
+                    summary: 'Vérifie si l’API est en ligne',
+                    responses: {
+                        200: {
+                            description: 'API opérationnelle',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        status: 'ok',
+                                        message: 'API opérationnelle ✅'
+                                    },
+                                },
+                            },
                         },
                     },
                 },
@@ -119,6 +139,37 @@ const options = {
                     },
                 },
             },
+            '/api/auth/profil': {
+                get: {
+                    tags: ['Auth'],
+                    summary: 'Obtenir les infos du profil connecté',
+                    description: 'Retourne les informations du client connecté',
+                    security: [{ bearerAuth: [] }],
+                    responses: {
+                        200: {
+                            description: 'Profil utilisateur',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        id: 1,
+                                        nom: 'Veeraragoo',
+                                        prenom: 'Darren',
+                                        email: 'd.veeraragoo@hotmail.com',
+                                        role: 'user',
+                                    },
+                                },
+                            },
+                        },
+                        401: {
+                            description: 'Non authentifié',
+                        },
+                        403: {
+                            description: 'Token invalide',
+                        },
+                    },
+                },
+            },
+
             '/api/auth/account': {
                 delete: {
                     tags: ['Auth'],
