@@ -1,35 +1,36 @@
+
 # 📘 Documentation API Fonctionnelle
 
-Cette API permet la gestion d’un système de comptes clients avec authentification sécurisée (JWT), historique des mises à jour (changelog), et rôles utilisateur (`user`, `admin`).
+Cette API permet la gestion d’un système de comptes clients avec authentification sécurisée (JWT), gestion du profil, gestion du refreshToken, déconnexion, historique des mises à jour (changelog) et interface d’administration.
 
 ## 1. Authentification et Autorisation
 
-- Authentification par JWT
-- Rafraîchissement de token via refreshToken
-- Middleware `verifyToken`
-- Middleware `authorizeRole('admin')` pour les routes restreintes
+- Authentification par JWT (`accessToken`)
+- Rafraîchissement du token via `refreshToken` (système sécurisé)
+- Middleware `authenticateToken` pour protéger les routes privées
+- Middleware `isAdmin` pour les routes réservées aux administrateurs
 
 ## 2. Rôles disponibles
 
-| Rôle   | Description                      |
-|--------|----------------------------------|
-| user   | Rôle par défaut à l’inscription |
-| admin  | Droits avancés (dashboard, etc.)|
+| Rôle   | Description                           |
+|--------|---------------------------------------|
+| user   | Rôle par défaut à l’inscription       |
+| admin  | Accès au dashboard et fonctions admin |
 
 ## 3. Routes disponibles
 
-| Fonction                    | Méthode | URL                          | Authentification          |
-|-----------------------------|---------|-------------------------------|---------------------------|
-| S’inscrire                  | POST    | /api/auth/register            | ❌                         |
-| Se connecter                | POST    | /api/auth/login               | ❌                         |
-| Rafraîchir le token         | POST    | /api/auth/refresh             | ❌ (via refreshToken)      |
-| Obtenir son profil          | GET     | /api/auth/profil              | ✅ `accessToken`           |
-| Se déconnecter              | POST    | /api/auth/logout              | ✅ `accessToken`           |
-| Supprimer son compte        | DELETE  | /api/auth/account             | ✅ `accessToken`           |
-| Voir le changelog           | GET     | /api/changelogs               | ❌                         |
-| Ajouter un changelog        | POST    | /api/changelogs               | ❌ *(à sécuriser si besoin)*|
-| Dashboard Admin             | GET     | /api/admin/dashboard          | ✅ `accessToken` + rôle `admin` |
-| Promouvoir un utilisateur   | PATCH   | /api/admin/promote/:userId    | ✅ `accessToken` + rôle `admin` |
+| Fonction                        | Méthode | URL                          | Authentification        |
+|----------------------------------|---------|------------------------------|-------------------------|
+| S’inscrire                      | POST    | /api/auth/register           | ❌                       |
+| Se connecter                    | POST    | /api/auth/login              | ❌                       |
+| Rafraîchir le token             | POST    | /api/auth/refresh            | ❌ (via refreshToken)    |
+| Obtenir son profil              | GET     | /api/auth/profil             | ✅ `accessToken`         |
+| Se déconnecter                  | POST    | /api/auth/logout             | ✅ `accessToken`         |
+| Supprimer son compte            | DELETE  | /api/auth/account            | ✅ `accessToken`         |
+| Voir le changelog               | GET     | /api/changelogs              | ❌                       |
+| Ajouter un changelog            | POST    | /api/changelogs              | ❌ *(à sécuriser)*       |
+| Dashboard Admin                 | GET     | /api/admin/dashboard         | ✅ `accessToken` + admin |
+| Promouvoir un utilisateur       | PATCH   | /api/admin/promote/:userId   | ✅ `accessToken` + admin |
 
 ## 4. Exemple : Dashboard admin
 
@@ -42,7 +43,6 @@ Cette API permet la gestion d’un système de comptes clients avec authentifica
   "message": "Bienvenue dans le dashboard admin 🛠️"
 }
 ```
-
 - **Réponse (403)** :
 ```json
 {
@@ -59,7 +59,7 @@ Permet de récupérer un nouveau `accessToken` à partir d’un `refreshToken` s
 Exemple de payload :
 ```json
 {
-  "refreshToken": "xxx.yyy.zzz"
+  "refreshToken": "xxx"
 }
 ```
 
@@ -80,5 +80,4 @@ Disponible via :
 
 ---
 
-👍 *Dernière mise à jour : ajout du système de rôles, route admin, et sécurisation du logout/suppression/refresh*
-
+👍 *Dernière mise à jour : système complet d’authentification JWT, gestion du profil, routes admin, rafraîchissement sécurisé du token, et documentation Swagger.*
