@@ -37,7 +37,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
             <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-                <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">🔐 Connexion</h2>
+                <h2 className="text-3xl font-bold mb-6 text-center text-purple-700">🔐 Connexion</h2>
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label className="block mb-1 text-sm font-medium text-gray-700">Adresse e-mail</label>
@@ -45,7 +45,7 @@ export default function LoginPage() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 text-purple-700"
                             placeholder="exemple@email.com"
                             required
                         />

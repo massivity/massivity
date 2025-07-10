@@ -72,7 +72,7 @@ export default function UsersManager() {
                             className="p-4 bg-purple-50 rounded-xl shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
                         >
                             <div>
-                                <span className="font-medium">{u.prenom} {u.nom}</span>
+                                <span className="font-medium text-purple-700">{u.prenom} {u.nom}</span>
                                 <span className={`ml-2 px-2 py-1 rounded text-xs font-bold ${
                                     u.role === 'admin'
                                         ? 'bg-purple-200 text-purple-700'
