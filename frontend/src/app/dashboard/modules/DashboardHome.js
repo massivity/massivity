@@ -10,9 +10,8 @@ export default function DashboardHome({ user }) {
         const fetchChangelogs = async () => {
             try {
                 const res = await api.get('/changelog');
-                // res.data est déjà un tableau, on affiche du plus récent au plus ancien
                 setChangelogs([...res.data].sort((a, b) => new Date(b.date) - new Date(a.date)));
-            } catch (err) {
+            } catch {
                 setChangelogs([]);
             } finally {
                 setLoading(false);

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
-import MinimumScreenSize from '@/components/screenBehavior/MinimumScreenSize';
+import MinimumScreenSize from '../../components/screenBehavior/minimumScreenSize';
 import { HomeIcon, UsersIcon, Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 
 import DashboardHome from './modules/DashboardHome';
