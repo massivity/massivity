@@ -18,26 +18,23 @@ export default function ProfilPage() {
                     return;
                 }
 
-                const res = await api.get('/profile', {
+                // Attention: "/profil" (pas "/profile") et .user dans la réponse
+                const res = await api.get('/auth/profil', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
-                setUser(res.data);
+                setUser(res.data.user);
             } catch (err) {
-                console.error("Erreur dans /profile :", err);
+                console.error("Erreur dans /auth/profil :", err);
 
-                // Si c’est une réponse HTTP, affiche les détails
                 if (err.response) {
-                    console.error("Status:", err.response.status);
-                    console.error("Data:", err.response.data);
-                    setErreur(`Erreur ${err.response.status} : ${err.response.data.message || 'Erreur inconnue'}`);
+                    setErreur(`Erreur ${err.response.status} : ${err.response.data.message || err.response.data.error || 'Erreur inconnue'}`);
                 } else {
                     setErreur("Impossible de charger le profil 😢");
                 }
-
-        } finally {
+            } finally {
                 setChargement(false);
             }
         };
@@ -69,17 +66,22 @@ export default function ProfilPage() {
                 ) : user ? (
                     <div className="space-y-4">
                         <div>
-                            <span className="font-medium text-gray-700">Nom :</span> {user.name}
+                            <span className="font-medium text-gray-700">Nom :</span> {user.nom}
+                        </div>
+                        <div>
+                            <span className="font-medium text-gray-700">Prénom :</span> {user.prenom}
                         </div>
                         <div>
                             <span className="font-medium text-gray-700">Email :</span> {user.email}
                         </div>
                         <div>
-                            <span className="font-medium text-gray-700">Rôle :</span> {user.role}
+                            <span className="font-medium text-gray-700">Adresse :</span> {user.adresse}
                         </div>
                         <div>
-                            <span className="font-medium text-gray-700">Inscrit le :</span>{' '}
-                            {new Date(user.createdAt).toLocaleDateString()}
+                            <span className="font-medium text-gray-700">Téléphone :</span> {user.telephone}
+                        </div>
+                        <div>
+                            <span className="font-medium text-gray-700">Rôle :</span> {user.role}
                         </div>
                         <button
                             onClick={() => {
