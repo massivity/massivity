@@ -26,6 +26,7 @@ app.use('/api/changelogs', changelogRoutes);  // Nouvelle convention ?
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', listAllUsers);
 app.use('/api/admin', promoteUser);
+app.use('/api/scrapping', require('./routes/scrapping'));
 
 // 👉 Toutes les routes liées à l'authentification ET au profil utilisateur :
 app.use('/api/auth', authRoutes);

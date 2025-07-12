@@ -31,7 +31,8 @@ const options = {
             { name: 'Auth', description: 'Routes d’authentification (inscription, connexion, profil)' },
             { name: 'Changelogs', description: 'Historique des modifications' },
             { name: 'Admin', description: 'Fonctions avancées (dashboard, gestion utilisateurs, promotion)' },
-            { name: 'Healthcheck', description: 'Vérification de l’état de l’API' }
+            { name: 'Healthcheck', description: 'Vérification de l’état de l’API' },
+            { name: 'Scrapping', description: 'Gestion des agences pour le scrapping concurrentiel (admin)' }
         ],
         paths: {
             // ----------------- AUTH ---------------------
@@ -343,6 +344,194 @@ const options = {
                     }
                 }
             },
+            // ----------------- SCRAPPING AGENCIES ---------------------
+            '/api/scrapping/agencies': {
+                get: {
+                    tags: ['Scrapping'],
+                    summary: 'Liste les agences de scrapping',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'concurrent',
+                            in: 'query',
+                            description: 'Filtrer par concurrent (Avis, Europcar, etc.)',
+                            required: false,
+                            schema: { type: 'string' }
+                        }
+                    ],
+                    responses: {
+                        200: {
+                            description: 'Liste récupérée avec succès',
+                            content: {
+                                'application/json': {
+                                    example: [
+                                        {
+                                            id: 1,
+                                            concurrent: 'Avis',
+                                            ville: 'Paris',
+                                            agence: 'Paris Gare de Lyon',
+                                            active: true,
+                                            meta: null,
+                                            created_at: '2025-07-10T22:00:00.000Z',
+                                            updated_at: '2025-07-10T22:00:00.000Z'
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        401: { description: 'Non authentifié' },
+                    }
+                },
+                post: {
+                    tags: ['Scrapping'],
+                    summary: 'Créer une agence de scrapping (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                example: {
+                                    concurrent: 'Avis',
+                                    ville: 'Nantes',
+                                    agence: 'Nantes Gare Nord',
+                                    meta: { note: 'Point relais' }
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        201: {
+                            description: 'Agence créée',
+                            content: { 'application/json': { example: { /*...agence...*/ } } }
+                        },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        409: { description: 'Agence déjà existante' }
+                    }
+                }
+            },
+            '/api/scrapping/agencies/import': {
+                post: {
+                    tags: ['Scrapping'],
+                    summary: 'Importer des agences depuis un fichier Excel (.xlsx) (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'multipart/form-data': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        file: {
+                                            type: 'string',
+                                            format: 'binary',
+                                            description: 'Fichier .xlsx à importer'
+                                        },
+                                        concurrent: {
+                                            type: 'string',
+                                            description: 'Nom du concurrent à affecter à toutes les agences importées'
+                                        }
+                                    },
+                                    required: ['file', 'concurrent']
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: {
+                            description: 'Import réalisé',
+                            content: {
+                                'application/json': {
+                                    example: { imported: 35, skipped: 1, total: 36 }
+                                }
+                            }
+                        },
+                        400: { description: 'Concurrent manquant' },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' }
+                    }
+                }
+            },
+            '/api/scrapping/agencies/{id}': {
+                patch: {
+                    tags: ['Scrapping'],
+                    summary: 'Modifier une agence (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'integer' },
+                            description: 'ID de l’agence à modifier'
+                        }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                example: {
+                                    ville: 'Nantes',
+                                    agence: 'Nantes Centre',
+                                    meta: { note: 'Maj nom' }
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: { description: 'Agence modifiée', content: { 'application/json': { example: { /*...agence...*/ } } } },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        404: { description: 'Agence non trouvée' }
+                    }
+                },
+                delete: {
+                    tags: ['Scrapping'],
+                    summary: 'Supprimer une agence (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'integer' },
+                            description: 'ID de l’agence à supprimer'
+                        }
+                    ],
+                    responses: {
+                        204: { description: 'Agence supprimée' },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        404: { description: 'Agence non trouvée' }
+                    }
+                }
+            },
+            '/api/scrapping/agencies/{id}/activate': {
+                patch: {
+                    tags: ['Scrapping'],
+                    summary: 'Activer ou désactiver une agence (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'integer' },
+                            description: 'ID de l’agence à activer/désactiver'
+                        }
+                    ],
+                    responses: {
+                        200: {
+                            description: 'Agence activée/désactivée',
+                            content: { 'application/json': { example: { /*...agence...*/ } } }
+                        },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' },
+                        404: { description: 'Agence non trouvée' }
+                    }
+                }
+            },
+
             // ----------------- HEALTHCHECK ---------------------
             '/api/healthcheck': {
                 get: {
