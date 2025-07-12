@@ -1,13 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/utils/api';
+import api from '../../utils/api';
 import MinimumScreenSize from '../../components/screenBehavior/minimumScreenSize';
 import { HomeIcon, UsersIcon, Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 
 import DashboardHome from './modules/DashboardHome';
 import UsersManager from './modules/UsersManager';
 import Settings from './modules/Settings';
+import AgenciesManager from './modules/AgenciesManager'; // <-- NOUVEAU MODULE
 
 export default function DashboardPage() {
     const [selectedMenu, setSelectedMenu] = useState('home');
@@ -96,6 +97,20 @@ export default function DashboardPage() {
                             onClick={() => { setSelectedMenu('users'); setMenuOpen(false); }}>
                             <UsersIcon className="h-5 w-5" /> Utilisateurs
                         </button>
+                        {/* MODULE AGENCES */}
+                        {user?.role === 'admin' && (
+                            <button
+                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
+                                    ${selectedMenu === 'agencies' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
+                                `}
+                                onClick={() => { setSelectedMenu('agencies'); setMenuOpen(false); }}>
+                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m6 2a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h12z" />
+                                </svg>
+                                Agences Scrapping
+                            </button>
+                        )}
                         <button
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
                                 ${selectedMenu === 'settings' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
@@ -130,6 +145,7 @@ export default function DashboardPage() {
                     {selectedMenu === 'home' && <DashboardHome user={user} />}
                     {selectedMenu === 'users' && <UsersManager users={usersList} loading={loadingUsers} />}
                     {selectedMenu === 'settings' && <Settings />}
+                    {selectedMenu === 'agencies' && user?.role === 'admin' && <AgenciesManager />}
                 </main>
             </div>
         </MinimumScreenSize>
