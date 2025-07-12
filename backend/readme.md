@@ -19,18 +19,25 @@ Cette API permet la gestion d’un système de comptes clients avec authentifica
 
 ## 3. Routes disponibles
 
-| Fonction                        | Méthode | URL                          | Authentification        |
-|----------------------------------|---------|------------------------------|-------------------------|
-| S’inscrire                      | POST    | /api/auth/register           | ❌                       |
-| Se connecter                    | POST    | /api/auth/login              | ❌                       |
-| Rafraîchir le token             | POST    | /api/auth/refresh            | ❌ (via refreshToken)    |
-| Obtenir son profil              | GET     | /api/auth/profil             | ✅ `accessToken`         |
-| Se déconnecter                  | POST    | /api/auth/logout             | ✅ `accessToken`         |
-| Supprimer son compte            | DELETE  | /api/auth/account            | ✅ `accessToken`         |
-| Voir le changelog               | GET     | /api/changelogs              | ❌                       |
-| Ajouter un changelog            | POST    | /api/changelogs              | ❌ *(à sécuriser)*       |
-| Dashboard Admin                 | GET     | /api/admin/dashboard         | ✅ `accessToken` + admin |
-| Promouvoir un utilisateur       | PATCH   | /api/admin/promote/:userId   | ✅ `accessToken` + admin |
+| Fonction                                 | Méthode | URL                                         | Authentification        |
+|-------------------------------------------|---------|---------------------------------------------|-------------------------|
+| S’inscrire                               | POST    | /api/auth/register                          | ❌                       |
+| Se connecter                             | POST    | /api/auth/login                             | ❌                       |
+| Rafraîchir le token                      | POST    | /api/auth/refresh                           | ❌ (via refreshToken)    |
+| Obtenir son profil                       | GET     | /api/auth/profil                            | ✅ `accessToken`         |
+| Se déconnecter                           | POST    | /api/auth/logout                            | ✅ `accessToken`         |
+| Supprimer son compte                     | DELETE  | /api/auth/account                           | ✅ `accessToken`         |
+| Voir le changelog                        | GET     | /api/changelogs                             | ❌                       |
+| Ajouter un changelog                     | POST    | /api/changelogs                             | ❌ *(à sécuriser)*       |
+| Dashboard Admin                          | GET     | /api/admin/dashboard                        | ✅ `accessToken` + admin |
+| Promouvoir un utilisateur                | PATCH   | /api/admin/promote/:userId                  | ✅ `accessToken` + admin |
+
+| Lister toutes les agences scrapping       | GET     | /api/scrapping/agencies                     | ✅ `accessToken`         |
+| Créer une agence de scrapping            | POST    | /api/scrapping/agencies                     | ✅ `accessToken` + admin |
+| Modifier une agence de scrapping         | PATCH   | /api/scrapping/agencies/{id}                | ✅ `accessToken` + admin |
+| Activer/Désactiver une agence            | PATCH   | /api/scrapping/agencies/{id}/activate       | ✅ `accessToken` + admin |
+| Supprimer une agence de scrapping        | DELETE  | /api/scrapping/agencies/{id}                | ✅ `accessToken` + admin |
+| Importer des agences par Excel (.xlsx)   | POST    | /api/scrapping/agencies/import              | ✅ `accessToken` + admin |
 
 ## 4. Exemple : Dashboard admin
 
