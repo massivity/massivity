@@ -452,6 +452,33 @@ const options = {
                     }
                 }
             },
+            '/api/scrapping/agencies/stats': {
+                get: {
+                    tags: ['Scrapping'],
+                    summary: 'Obtenir des statistiques sur les agences (admin uniquement)',
+                    security: [{ bearerAuth: [] }],
+                    responses: {
+                        200: {
+                            description: 'Statistiques des agences',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        stats: [
+                                            { concurrent: 'Avis', count: 15 },
+                                            { concurrent: 'Sixt', count: 12 },
+                                            { concurrent: 'Europcar', count: 7 },
+                                            { concurrent: 'Rent A Car', count: 8 }
+                                        ],
+                                        total_active: 30
+                                    }
+                                }
+                            }
+                        },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' }
+                    }
+                }
+            },
             '/api/scrapping/agencies/{id}': {
                 patch: {
                     tags: ['Scrapping'],
