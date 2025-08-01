@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import api from '../../../utils/api';
 
 export default function AvisManager() {
@@ -19,7 +20,6 @@ export default function AvisManager() {
                 offset: (page - 1) * limit,
                 ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v))
             }).toString();
-
 
             const res = await api.get(`/admin/avis?${query}`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -43,16 +43,17 @@ export default function AvisManager() {
     };
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Locations AVIS</h1>
+        <section>
+            <h1 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
+                <DocumentTextIcon className="w-7 h-7" /> Historique des locations AVIS
+            </h1>
 
-            {/* Filtres */}
-            <div className="flex gap-4 flex-wrap mb-6">
+            <div className="flex flex-wrap gap-4 mb-6">
                 <input
                     type="text"
                     name="ville"
                     placeholder="Ville"
-                    className="border rounded p-2"
+                    className="border border-purple-300 rounded px-4 py-2 text-sm w-full sm:w-auto"
                     value={filters.ville}
                     onChange={handleChange}
                 />
@@ -60,7 +61,7 @@ export default function AvisManager() {
                     type="text"
                     name="agence"
                     placeholder="Agence"
-                    className="border rounded p-2"
+                    className="border border-purple-300 rounded px-4 py-2 text-sm w-full sm:w-auto"
                     value={filters.agence}
                     onChange={handleChange}
                 />
@@ -68,69 +69,54 @@ export default function AvisManager() {
                     type="text"
                     name="modele"
                     placeholder="Modèle"
-                    className="border rounded p-2"
+                    className="border border-purple-300 rounded px-4 py-2 text-sm w-full sm:w-auto"
                     value={filters.modele}
                     onChange={handleChange}
                 />
             </div>
 
-            {/* Tableau */}
             {loading ? (
-                <p>Chargement...</p>
+                <div className="mt-6 text-gray-500">Chargement...</div>
             ) : (
-                <div className="overflow-auto">
-                    <table className="w-full table-auto text-sm border">
-                        <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border px-2 py-1">Date</th>
-                            <th className="border px-2 py-1">Ville</th>
-                            <th className="border px-2 py-1">Agence</th>
-                            <th className="border px-2 py-1">Modèle</th>
-                            <th className="border px-2 py-1">Prix (€)</th>
-                            <th className="border px-2 py-1">Période</th>
-                            <th className="border px-2 py-1">Durée</th>
-                            <th className="border px-2 py-1">IP</th>
-                            {/* <th className="border px-2 py-1">Genre</th> */}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {data.map((row, index) => (
-                            <tr key={index} className="text-sm text-center">
-                                <td className="border px-2 py-1">{row.date_location?.split('T')[0]}</td>
-                                <td className="border px-2 py-1">{row.ville}</td>
-                                <td className="border px-2 py-1">{row.agence}</td>
-                                <td className="border px-2 py-1">{row.modele}</td>
-                                <td className="border px-2 py-1">
-                                    {!isNaN(parseFloat(row.prix)) ? parseFloat(row.prix).toFixed(2) : '—'}
-                                </td>
-
-                                <td className="border px-2 py-1">{row.periode || '—'}</td>
-                                <td className="border px-2 py-1">{row.duree || '—'}</td>
-                                <td className="border px-2 py-1">{row.ip || '—'}</td>
-                                {/* <td className="border px-2 py-1">{row.genre || '—'}</td> */}
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
+                <ul className="space-y-3">
+                    {data.length === 0 ? (
+                        <li className="text-gray-400">Aucune donnée trouvée.</li>
+                    ) : data.map((row, index) => (
+                        <li
+                            key={index}
+                            className="p-4 bg-purple-50 rounded-xl shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-sm"
+                        >
+                            <div className="flex flex-col">
+                                <span className="text-purple-800 font-semibold">{row.modele}</span>
+                                <span className="text-gray-600 text-xs">{row.ville} - {row.agence}</span>
+                                <span className="text-gray-400 text-xs">{row.date_location?.split('T')[0]}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                                <span><strong>Prix :</strong> {!isNaN(parseFloat(row.prix)) ? parseFloat(row.prix).toFixed(2) + ' €' : '—'}</span>
+                                <span><strong>Période :</strong> {row.periode || '—'}</span>
+                                <span><strong>Durée :</strong> {row.duree || '—'}</span>
+                                <span><strong>IP :</strong> {row.ip || '—'}</span>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             )}
 
-            {/* Pagination */}
             <div className="mt-6 flex justify-between items-center">
                 <button
-                    className="px-4 py-2 bg-purple-200 rounded disabled:opacity-50"
+                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}>
                     Précédent
                 </button>
-                <span className="text-sm">Page {page} / {Math.ceil(count / limit) || 1}</span>
+                <span className="text-sm text-gray-700">Page {page} / {Math.ceil(count / limit) || 1}</span>
                 <button
-                    className="px-4 py-2 bg-purple-200 rounded disabled:opacity-50"
+                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                     onClick={() => setPage(p => p + 1)}
                     disabled={page * limit >= count}>
                     Suivant
                 </button>
             </div>
-        </div>
+        </section>
     );
 }

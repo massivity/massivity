@@ -16,6 +16,7 @@ import DashboardHome from './modules/DashboardHome';
 import UsersManager from './modules/UsersManager';
 import Settings from './modules/Settings';
 import AvisManager from './modules/AvisManager';
+import Wip from './modules/wip';
 
 export default function DashboardPage() {
     const [selectedMenu, setSelectedMenu] = useState('home');
@@ -96,6 +97,25 @@ export default function DashboardPage() {
                             onClick={() => { setSelectedMenu('home'); setMenuOpen(false); }}>
                             <HomeIcon className="h-5 w-5" /> Accueil
                         </button>
+
+                        <div className="mt-4">
+                            <div className="text-xs text-gray-400 uppercase mb-2">Scrapping AVIS</div>
+                            <button
+                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
+                                    ${selectedSubMenu === 'dashboard_avis' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
+                                `}
+                                onClick={() => { setSelectedMenu('dashboard_avis'); setSelectedSubMenu('dashboard_avis'); setMenuOpen(false); }}>
+                                <MagnifyingGlassIcon className="h-5 w-5" /> Dashboard
+                            </button>
+                            <button
+                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
+                                    ${selectedSubMenu === 'avis' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
+                                `}
+                                onClick={() => { setSelectedMenu('avis'); setSelectedSubMenu('avis'); setMenuOpen(false); }}>
+                                <MagnifyingGlassIcon className="h-5 w-5" /> Visualisation
+                            </button>
+                        </div>
+                        <div className="text-xs text-gray-400 uppercase mb-2">Espace admin</div>
                         <button
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
                                 ${selectedMenu === 'users' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
@@ -103,16 +123,6 @@ export default function DashboardPage() {
                             onClick={() => { setSelectedMenu('users'); setMenuOpen(false); }}>
                             <UsersIcon className="h-5 w-5" /> Utilisateurs
                         </button>
-                        <div className="mt-4">
-                            <div className="text-xs text-gray-400 uppercase mb-2">Scrapping</div>
-                            <button
-                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
-                                    ${selectedSubMenu === 'avis' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
-                                `}
-                                onClick={() => { setSelectedMenu('avis'); setSelectedSubMenu('avis'); setMenuOpen(false); }}>
-                                <MagnifyingGlassIcon className="h-5 w-5" /> Avis
-                            </button>
-                        </div>
                         <button
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
                                 ${selectedMenu === 'settings' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
@@ -148,6 +158,7 @@ export default function DashboardPage() {
                     {selectedMenu === 'users' && <UsersManager users={usersList} loading={loadingUsers} />}
                     {selectedMenu === 'settings' && <Settings />}
                     {selectedMenu === 'avis' && <AvisManager />}
+                    {selectedMenu === 'dashboard_avis' && <Wip />}
                 </main>
             </div>
         </MinimumScreenSize>
