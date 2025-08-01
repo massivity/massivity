@@ -280,6 +280,95 @@ const options = {
                     }
                 }
             },
+            '/api/admin/avis': {
+                get: {
+                    tags: ['Admin'],
+                    summary: 'Lister les locations AVIS',
+                    description: 'Liste paginée des locations AVIS avec filtres optionnels.',
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: 'ville',
+                            in: 'query',
+                            description: 'Filtrer par ville',
+                            required: false,
+                            schema: { type: 'string' }
+                        },
+                        {
+                            name: 'modele',
+                            in: 'query',
+                            description: 'Filtrer par modèle de véhicule',
+                            required: false,
+                            schema: { type: 'string' }
+                        },
+                        {
+                            name: 'agence',
+                            in: 'query',
+                            description: 'Filtrer par nom de l’agence',
+                            required: false,
+                            schema: { type: 'string' }
+                        },
+                        {
+                            name: 'date',
+                            in: 'query',
+                            description: 'Filtrer par date (format YYYY-MM-DD)',
+                            required: false,
+                            schema: { type: 'string', format: 'date' }
+                        },
+                        {
+                            name: 'limit',
+                            in: 'query',
+                            description: 'Nombre de résultats à retourner',
+                            required: false,
+                            schema: { type: 'integer', default: 50 }
+                        },
+                        {
+                            name: 'offset',
+                            in: 'query',
+                            description: 'Décalage de pagination',
+                            required: false,
+                            schema: { type: 'integer', default: 0 }
+                        }
+                    ],
+                    responses: {
+                        200: {
+                            description: 'Liste des données AVIS',
+                            content: {
+                                'application/json': {
+                                    example: {
+                                        count: 2,
+                                        data: [
+                                            {
+                                                id: 101,
+                                                pays: 'France',
+                                                ville: 'Paris',
+                                                agence: 'Paris Gare de Lyon',
+                                                modele: 'Peugeot 208',
+                                                categorie: 'Citadine',
+                                                prix: 57.99,
+                                                date_location: '2025-08-27'
+                                            },
+                                            {
+                                                id: 102,
+                                                pays: 'France',
+                                                ville: 'Lyon',
+                                                agence: 'Lyon Part-Dieu',
+                                                modele: 'Clio',
+                                                categorie: 'Citadine',
+                                                prix: 63.50,
+                                                date_location: '2025-08-28'
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        401: { description: 'Non authentifié' },
+                        403: { description: 'Accès interdit : admin uniquement' }
+                    }
+                }
+            },
+
             '/api/healthcheck': {
                 get: {
                     tags: ['Healthcheck'],
