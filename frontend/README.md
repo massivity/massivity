@@ -41,11 +41,11 @@ L’interface web cliente a été développée avec **Next.js 15**, **Tailwind C
 
 ### 📁 Pages disponibles
 
-| URL               | Fichier                                | Description                                                |
-|-------------------|----------------------------------------|------------------------------------------------------------|
-| `/login`          | `src/app/login/page.jsx`               | Page de connexion avec envoi des identifiants via Axios.   |
-| `/register`       | `src/app/register/page.jsx`            | Formulaire d’inscription avec tous les champs requis.      |
-| `/changelog`      | `src/app/changelog/page.jsx`           | Affichage dynamique du journal des modifications (changelog). |
+| URL               | Fichier                             | Description                                                |
+|-------------------|-------------------------------------|------------------------------------------------------------|
+| `/login`          | `src/app/login/page.js`             | Page de connexion avec envoi des identifiants via Axios.   |
+| `/register`       | `src/app/register/page.js`          | Formulaire d’inscription avec tous les champs requis.      |
+| `/changelog`      | `src/app/changelog/page.js`         | Affichage dynamique du journal des modifications (changelog). |
 
 ---
 
@@ -80,11 +80,11 @@ router.push('/profil');
 src/
 ├── app/
 │   ├── login/
-│   │   └── page.jsx
+│   │   └── page.js
 │   ├── register/
-│   │   └── page.jsx
+│   │   └── page.js
 │   └── changelog/
-│       └── page.jsx
+│       └── page.js
 ├── utils/
 │   └── api.js  ← client Axios avec token
 ```
