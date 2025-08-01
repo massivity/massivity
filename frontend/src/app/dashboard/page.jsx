@@ -17,6 +17,7 @@ import UsersManager from './modules/UsersManager';
 import Settings from './modules/Settings';
 import AvisManager from './modules/AvisManager';
 import Wip from './modules/wip';
+import {DocumentChartBarIcon} from "@heroicons/react/16/solid";
 
 export default function DashboardPage() {
     const [selectedMenu, setSelectedMenu] = useState('home');
@@ -105,7 +106,7 @@ export default function DashboardPage() {
                                     ${selectedSubMenu === 'dashboard_avis' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
                                 `}
                                 onClick={() => { setSelectedMenu('dashboard_avis'); setSelectedSubMenu('dashboard_avis'); setMenuOpen(false); }}>
-                                <MagnifyingGlassIcon className="h-5 w-5" /> Dashboard
+                                <DocumentChartBarIcon className="h-5 w-5" /> Dashboard
                             </button>
                             <button
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full

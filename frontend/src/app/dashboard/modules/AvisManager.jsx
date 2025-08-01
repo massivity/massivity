@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import api from '../../../utils/api';
 
 export default function AvisManager() {
@@ -42,11 +42,43 @@ export default function AvisManager() {
         setFilters({ ...filters, [e.target.name]: e.target.value });
     };
 
+    const handleExport = async () => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            const query = new URLSearchParams({
+                ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v))
+            }).toString();
+
+            const res = await api.get(`/admin/avis/export?${query}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                responseType: 'blob'
+            });
+
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'avis_export.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            console.error('Erreur export :', err);
+        }
+    };
+
     return (
         <section>
-            <h1 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
-                <DocumentTextIcon className="w-7 h-7" /> Historique des locations AVIS
-            </h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-semibold text-purple-700 flex items-center gap-2">
+                    <DocumentTextIcon className="w-7 h-7" /> Historique des locations AVIS
+                </h1>
+                <button
+                    onClick={handleExport}
+                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                >
+                    <ArrowDownTrayIcon className="w-5 h-5" /> Exporter
+                </button>
+            </div>
 
             <div className="flex flex-wrap gap-4 mb-6">
                 <input
@@ -106,14 +138,16 @@ export default function AvisManager() {
                 <button
                     className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}>
+                    disabled={page === 1}
+                >
                     Précédent
                 </button>
                 <span className="text-sm text-gray-700">Page {page} / {Math.ceil(count / limit) || 1}</span>
                 <button
                     className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
                     onClick={() => setPage(p => p + 1)}
-                    disabled={page * limit >= count}>
+                    disabled={page * limit >= count}
+                >
                     Suivant
                 </button>
             </div>

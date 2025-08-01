@@ -31,6 +31,7 @@ const options = {
             { name: 'Auth', description: 'Routes d’authentification (inscription, connexion, profil)' },
             { name: 'Changelogs', description: 'Historique des modifications' },
             { name: 'Admin', description: 'Fonctions avancées (dashboard, gestion utilisateurs, promotion)' },
+            { name: 'Scrapping_avis', description: 'Fonctions scrapping AVIS (dashboard, import, export, liste des résultats)' },
             { name: 'Healthcheck', description: 'Vérification de l’état de l’API' }
         ],
         paths: {
@@ -163,6 +164,85 @@ const options = {
                     },
                 },
             },
+            "/admin/promote/{userId}": {
+                patch: {
+                    tags: ["Admin"],
+                    summary: "Promouvoir ou rétrograder un utilisateur",
+                    description: "Permet à un administrateur de changer le rôle d’un utilisateur entre `user` et `admin`.",
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            name: "userId",
+                            in: "path",
+                            required: true,
+                            description: "ID de l’utilisateur",
+                            schema: {
+                                type: "integer",
+                                example: 42
+                            }
+                        }
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        role: {
+                                            type: "string",
+                                            enum: ["user", "admin"],
+                                            example: "admin"
+                                        }
+                                    },
+                                    required: ["role"]
+                                }
+                            }
+                        }
+                    },
+                    responses: {
+                        200: {
+                            description: "Rôle mis à jour avec succès",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            user: {
+                                                type: "object",
+                                                properties: {
+                                                    id: { type: "integer" },
+                                                    nom: { type: "string" },
+                                                    prenom: { type: "string" },
+                                                    email: { type: "string" },
+                                                    role: { type: "string" }
+                                                }
+                                            },
+                                            message: {
+                                                type: "string",
+                                                example: "Rôle mis à jour"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        400: {
+                            description: "Erreur de validation ou tentative de rétrogradation de soi-même"
+                        },
+                        403: {
+                            description: "Accès interdit : admin uniquement"
+                        },
+                        404: {
+                            description: "Utilisateur non trouvé"
+                        },
+                        500: {
+                            description: "Erreur serveur"
+                        }
+                    }
+                }
+            },
+
             '/api/auth/refresh': {
                 post: {
                     tags: ['Auth'],
@@ -259,7 +339,7 @@ const options = {
             },
             '/api/admin/import-avis': {
                 post: {
-                    tags: ['Admin'],
+                    tags: ['Scrapping_avis'],
                     summary: 'Importer les fichiers AVIS (.xlsx)',
                     description: 'Déclenche l’importation des fichiers Excel AVIS depuis le dossier `/data/avis`. Seules les lignes non présentes en base sont insérées.',
                     security: [{ bearerAuth: [] }],
@@ -282,8 +362,8 @@ const options = {
             },
             '/api/admin/avis': {
                 get: {
-                    tags: ['Admin'],
-                    summary: 'Lister les locations AVIS',
+                    tags: ['Scrapping_avis'],
+                    summary: 'Lister les résultats de scrapping AVIS',
                     description: 'Liste paginée des locations AVIS avec filtres optionnels.',
                     security: [{ bearerAuth: [] }],
                     parameters: [
@@ -368,7 +448,56 @@ const options = {
                     }
                 }
             },
-
+            "/admin/avis/export": {
+                get: {
+                    tags: ["Scrapping_avis"],
+                    summary: "Exporter les données AVIS au format XLSX",
+                    description: "Permet de télécharger les résultats de la recherche AVIS sous forme de fichier Excel.",
+                    parameters: [
+                        {
+                            name: "ville",
+                            in: "query",
+                            description: "Filtrer par ville",
+                            schema: { type: "string" }
+                        },
+                        {
+                            name: "agence",
+                            in: "query",
+                            description: "Filtrer par agence",
+                            schema: { type: "string" }
+                        },
+                        {
+                            name: "modele",
+                            in: "query",
+                            description: "Filtrer par modèle",
+                            schema: { type: "string" }
+                        },
+                        {
+                            name: "date",
+                            in: "query",
+                            description: "Filtrer par date (format YYYY-MM-DD)",
+                            schema: { type: "string", format: "date" }
+                        }
+                    ],
+                    responses: {
+                        200: {
+                            description: "Fichier Excel généré",
+                            content: {
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                                    schema: {
+                                        type: "string",
+                                        format: "binary"
+                                    }
+                                }
+                            }
+                        },
+                        500: {
+                            description: "Erreur serveur"
+                        }
+                    },
+                    security: [{ bearerAuth: [] }]
+                }
+            },
             '/api/healthcheck': {
                 get: {
                     tags: ['Healthcheck'],
