@@ -3,15 +3,23 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '../../utils/api';
 import MinimumScreenSize from '../../components/screenBehavior/minimumScreenSize';
-import { HomeIcon, UsersIcon, Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
-
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import {
+    HomeIcon,
+    UsersIcon,
+    Cog6ToothIcon,
+    ArrowLeftOnRectangleIcon,
+    FolderIcon
+} from '@heroicons/react/24/outline';
 
 import DashboardHome from './modules/DashboardHome';
 import UsersManager from './modules/UsersManager';
 import Settings from './modules/Settings';
+import AvisManager from './modules/AvisManager';
 
 export default function DashboardPage() {
     const [selectedMenu, setSelectedMenu] = useState('home');
+    const [selectedSubMenu, setSelectedSubMenu] = useState(null);
     const [user, setUser] = useState(null);
     const [usersList, setUsersList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,7 +27,6 @@ export default function DashboardPage() {
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
-    // Sécurité : Vérifie accessToken + role admin
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -38,7 +45,6 @@ export default function DashboardPage() {
         fetchUser();
     }, [router]);
 
-    // Fetch utilisateurs (section "Utilisateurs")
     useEffect(() => {
         const fetchUsers = async () => {
             if (selectedMenu !== 'users') return;
@@ -97,6 +103,16 @@ export default function DashboardPage() {
                             onClick={() => { setSelectedMenu('users'); setMenuOpen(false); }}>
                             <UsersIcon className="h-5 w-5" /> Utilisateurs
                         </button>
+                        <div className="mt-4">
+                            <div className="text-xs text-gray-400 uppercase mb-2">Scrapping</div>
+                            <button
+                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
+                                    ${selectedSubMenu === 'avis' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
+                                `}
+                                onClick={() => { setSelectedMenu('avis'); setSelectedSubMenu('avis'); setMenuOpen(false); }}>
+                                <MagnifyingGlassIcon className="h-5 w-5" /> Avis
+                            </button>
+                        </div>
                         <button
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition w-full
                                 ${selectedMenu === 'settings' ? 'bg-purple-100 text-purple-800 font-bold' : 'hover:bg-purple-50 text-gray-700'}
@@ -131,6 +147,7 @@ export default function DashboardPage() {
                     {selectedMenu === 'home' && <DashboardHome user={user} />}
                     {selectedMenu === 'users' && <UsersManager users={usersList} loading={loadingUsers} />}
                     {selectedMenu === 'settings' && <Settings />}
+                    {selectedMenu === 'avis' && <AvisManager />}
                 </main>
             </div>
         </MinimumScreenSize>
